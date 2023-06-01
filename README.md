@@ -21,37 +21,9 @@
 - Настройте Keepalived так, чтобы он запускал данный скрипт каждые 3 секунды и переносил виртуальный IP на другой сервер, если bash-скрипт завершался с кодом, отличным от нуля (то есть порт веб-сервера был недоступен или отсутствовал index.html). Используйте для этого секцию vrrp_script
 - На проверку отправьте получившейся bash-скрипт и конфигурационный файл keepalived, а также скриншот с демонстрацией переезда плавающего ip на другой сервер в случае недоступности порта или файла index.html
 
-#!/bin/bash
-index=`test -f /var/www/html/index.nginx-debian.html`
-port=`nc -z localhost 80`
+![image](https://github.com/FadMikhail/9.1_Disaster-recovery-Keepalived/assets/132131230/8abcd0eb-586e-4b9f-9aa8-bf0181747847)
 
-if [[ $index -eq $? ]] && [[ $port -eq $?]]; then 
-exit 0
-else
-exit 1
-fi
-
-
-vrrp_script check_bash {
-    script "/home/test1/test.sh"
-    interval 5
-    fall 5
-}
-
-vrrp_instance VI_1 {
-        state MASTER
-        interface enp0s3
-        virtual_router_id 15
-        priority 240
-        advert_int 1
-
-        virtual_ipaddress {
-              192.168.0.10/24
-        }
-        track_script {
-              check_bash
-        } 
-}
+![image](https://github.com/FadMikhail/9.1_Disaster-recovery-Keepalived/assets/132131230/b70a8dd2-826e-4e48-ac90-27b588d5281d)
 
 ![image](https://github.com/FadMikhail/9.1_Disaster-recovery-Keepalived/assets/132131230/e4ba006c-7f33-4891-a3a2-ca6a5410f599)
 
